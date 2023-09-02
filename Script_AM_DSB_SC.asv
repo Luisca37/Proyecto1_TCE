@@ -5,7 +5,7 @@ t=(0: N-1)*Ts;
 
 %Señal Moduladora 1 
 M1=0.5;
-F_mod1=60;
+F_mod1=10;
 A_mod1=1;
 S_mod1=A_mod1*cos(2*pi*F_mod1*t)+1;
 figure(1)
@@ -16,7 +16,7 @@ title("Señal Moduladora 1");
 %Señal Portadora 1
 %A_port=A_mod/M;
 A_port1=1;
-F_port1=1000;
+F_port1=500;
 S_port1=A_port1*cos(2*pi*F_port1*t);
 figure(1)
 subplot(2,1,2); 
@@ -70,7 +70,7 @@ plot(t, AM2)
 title("Señal Modulada 2")
 
 %MULTIPLEXACIÓN DE SEÑALES
-Suma=AM1+AM2+7*cos(2*pi*100*t);
+Suma=AM1+AM2+7*cos(2*pi*200*t);
 figure(5)
 plot(t,Suma)
 title("Señal Sumada AM")
@@ -106,10 +106,4 @@ ylabel("|P1(f)|")
 
 %--------------Modulacion FM----------------------
 
-%Desviacion de frecuencia
-fDev = 50;
-%frecuencia de portadora FM
-fc_fm = 10000
 
-%modulacion FM
-y = fmmod(x,fc_fm,fs,fDev);
