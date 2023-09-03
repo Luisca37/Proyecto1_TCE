@@ -104,47 +104,96 @@ title("Single-Sided Amplitude Spectrum of Suma(t)")
 xlabel("f (Hz)")
 ylabel("|P1(f)|")
 
-
-
-%--------------Modulacion FM----------------------
-
-m = Suma; %mensaje a modular
-
-fDev = 50;
-
-fc_fm = 10000;
-Fs=2*fc_fm;
-mi=2;
-%t = (0:1/Fs:0.01);
-
-s_fm = fmmod(m,fc_fm,Fs,fDev);
-
+%Filtrado de señal media
+Wpass=[800 1500];
+Filtrado=bandpass(Suma,Wpass,Fs);
+Y=fft(Filtrado);
+P2 = abs(Y/N);
+P1 = P2(1:N/2+1);
+P1(2:end-1) = 2*P1(2:end-1);
+f = Fs*(0:(N/2))/N;
 figure(8)
-plot(t,m,'c',t,s_fm,'b--')
-xlabel('Time (s)')
-ylabel('Amplitude')
-legend('Original Signal','Modulated Signal')
+plot(f,P1) 
+title("Filtrado despues de paso banda")
+xlabel("f (Hz)")
+ylabel("|P1(f)|")
+figure(9)
 
+plot(t,Filtrado);
+title("Señal media filtrada en el tiempo")
 
-fm_demod = fmdemod(s_fm,fc_fm,Fs,fDev);
-
-
-
-
-%Espectro Señal demodulada FM
-Y=fft(fm_demod);
+%Filtrado de señal baja
+Filtrado=lowpass(Suma,750,Fs);
+Y=fft(Filtrado);
 P2 = abs(Y/N);
 P1 = P2(1:N/2+1);
 P1(2:end-1) = 2*P1(2:end-1);
 f = Fs*(0:(N/2))/N;
 figure(10)
 plot(f,P1) 
-title("Single-Sided Amplitude Spectrum of señal FM demodulada")
+title("Filtrado despues de paso bajo")
 xlabel("f (Hz)")
 ylabel("|P1(f)|")
-
 figure(11)
-plot(t,m,'c',t,fm_demod,'b--')
-xlabel('Time (s)')
-ylabel('Amplitude')
-legend('Moduladora','Demodulacion FM')
+
+plot(t,Filtrado);
+title("Señal baja filtrada en el tiempo")
+
+%Filtrado de señal alta
+Filtrado=highpass(Suma,1500,Fs);
+Y=fft(Filtrado);
+P2 = abs(Y/N);
+P1 = P2(1:N/2+1);
+P1(2:end-1) = 2*P1(2:end-1);
+f = Fs*(0:(N/2))/N;
+figure(10)
+plot(f,P1) 
+title("Filtrado despues de paso alto")
+xlabel("f (Hz)")
+ylabel("|P1(f)|")
+figure(11)
+
+plot(t,Filtrado);
+title("Señal alta filtrada en el tiempo")
+%--------------Modulacion FM----------------------
+
+% m = Suma; %mensaje a modular
+% 
+% fDev = 50;
+% 
+% fc_fm = 10000;
+% Fs=2*fc_fm;
+% mi=2;
+% %t = (0:1/Fs:0.01);
+% 
+% s_fm = fmmod(m,fc_fm,Fs,fDev);
+% 
+% figure(8)
+% plot(t,m,'c',t,s_fm,'b--')
+% xlabel('Time (s)')
+% ylabel('Amplitude')
+% legend('Original Signal','Modulated Signal')
+% 
+% 
+% fm_demod = fmdemod(s_fm,fc_fm,Fs,fDev);
+% 
+% 
+% 
+% 
+% %Espectro Señal demodulada FM
+% Y=fft(fm_demod);
+% P2 = abs(Y/N);
+% P1 = P2(1:N/2+1);
+% P1(2:end-1) = 2*P1(2:end-1);
+% f = Fs*(0:(N/2))/N;
+% figure(10)
+% plot(f,P1) 
+% title("Single-Sided Amplitude Spectrum of señal FM demodulada")
+% xlabel("f (Hz)")
+% ylabel("|P1(f)|")
+% 
+% figure(11)
+% plot(t,m,'c',t,fm_demod,'b--')
+% xlabel('Time (s)')
+% ylabel('Amplitude')
+% legend('Moduladora','Demodulacion FM')
