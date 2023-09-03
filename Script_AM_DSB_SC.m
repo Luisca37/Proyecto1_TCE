@@ -1,3 +1,5 @@
+syms t
+
 N=1024;
 Fs=2*2500;
 Ts=1/Fs;
@@ -106,10 +108,43 @@ ylabel("|P1(f)|")
 
 %--------------Modulacion FM----------------------
 
-%Desviacion de frecuencia
-fDev = 50;
-%frecuencia de portadora FM
-fc_fm = 10000
+m = Suma; %mensaje a modular
 
-%modulacion FM
-y = fmmod(x,fc_fm,fs,fDev);
+fDev = 50;
+
+fc_fm = 10000;
+Fs=2*fc_fm;
+mi=2;
+%t = (0:1/Fs:0.01);
+
+s_fm = fmmod(m,fc_fm,Fs,fDev);
+
+figure(8)
+plot(t,m,'c',t,s_fm,'b--')
+xlabel('Time (s)')
+ylabel('Amplitude')
+legend('Original Signal','Modulated Signal')
+
+
+fm_demod = fmdemod(s_fm,fc_fm,Fs,fDev);
+
+
+
+
+%Espectro Señal demodulada FM
+Y=fft(fm_demod);
+P2 = abs(Y/N);
+P1 = P2(1:N/2+1);
+P1(2:end-1) = 2*P1(2:end-1);
+f = Fs*(0:(N/2))/N;
+figure(10)
+plot(f,P1) 
+title("Single-Sided Amplitude Spectrum of señal FM demodulada")
+xlabel("f (Hz)")
+ylabel("|P1(f)|")
+
+figure(11)
+plot(t,m,'c',t,fm_demod,'b--')
+xlabel('Time (s)')
+ylabel('Amplitude')
+legend('Moduladora','Demodulacion FM')
