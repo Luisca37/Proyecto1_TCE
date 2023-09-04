@@ -1,4 +1,4 @@
-syms t
+%syms t2;
 
 N=1024;
 Fs=2*2500;
@@ -7,8 +7,8 @@ t=(0: N-1)*Ts;
 
 %Señal Moduladora 1 
 M1=0.5;
-F_mod1=60;
-A_mod1=1;
+F_mod1=10;
+A_mod1=5;
 S_mod1=A_mod1*cos(2*pi*F_mod1*t);
 figure(1)
 subplot(2,1,1); 
@@ -18,7 +18,7 @@ title("Señal Moduladora 1");
 %Señal Portadora 1
 %A_port=A_mod/M;
 A_port1=1;
-F_port1=1000;
+F_port1=700;
 S_port1=A_port1*cos(2*pi*F_port1*t);
 figure(1)
 subplot(2,1,2); 
@@ -48,7 +48,7 @@ ylabel("|P1(f)|")
 %Señal Moduladora 2 
 M2=0.5;
 F_mod2=100;
-A_mod2=1;
+A_mod2=10;
 S_mod2=A_mod2*cos(2*pi*F_mod2*t);
 figure(3)
 subplot(2,1,1); 
@@ -72,7 +72,7 @@ plot(t, AM2)
 title("Señal Modulada 2")
 
 %MULTIPLEXACIÓN DE SEÑALES
-Suma=AM1+AM2+7*cos(2*pi*100*t);
+Suma=AM1+AM2+7*cos(2*pi*20*t);
 figure(5)
 plot(t,Suma)
 title("Señal Sumada AM")
@@ -105,7 +105,7 @@ xlabel("f (Hz)")
 ylabel("|P1(f)|")
 
 %Filtrado de señal media
-Wpass=[800 1500];
+Wpass=[240 1200];
 FiltradoBP=bandpass(Suma,Wpass,Fs);
 Y=fft(FiltradoBP);
 P2 = abs(Y/N);
@@ -120,8 +120,8 @@ ylabel("|P1(f)|")
 figure(9)
 plot(t,FiltradoBP);
 title("Señal media filtrada en el tiempo")
-demod_BP=amdemod(FiltradoBP,1000,Fs);%Demudulado señal media
-figure(12)
+demod_BP=amdemod(FiltradoBP,500,Fs);%Demudulado señal media
+figure(14)
 plot(t,demod_BP)
 title("SEÑAL BP DEMODULADA DESPUES DE FILTRO")
 Y=fft(demod_BP);
@@ -129,14 +129,14 @@ P2 = abs(Y/N);
 P1 = P2(1:N/2+1);
 P1(2:end-1) = 2*P1(2:end-1);
 f = Fs*(0:(N/2))/N;
-figure(13)
+figure(15)
 plot(f,P1) 
 title("ESPECTRO DEMODULADA PB")
 xlabel("f (Hz)")
 ylabel("|P1(f)|")
 
 %Filtrado de señal baja
-FiltradoLP=lowpass(Suma,750,Fs);
+FiltradoLP=lowpass(Suma,50,Fs);
 Y=fft(FiltradoLP);
 P2 = abs(Y/N);
 P1 = P2(1:N/2+1);
@@ -159,12 +159,12 @@ P2 = abs(Y/N);
 P1 = P2(1:N/2+1);
 P1(2:end-1) = 2*P1(2:end-1);
 f = Fs*(0:(N/2))/N;
-figure(10)
+figure(12)
 plot(f,P1) 
 title("Filtrado despues de paso alto")
 xlabel("f (Hz)")
 ylabel("|P1(f)|")
-figure(11)
+figure(13)
 
 plot(t,FiltradoHP);
 title("Señal alta filtrada en el tiempo")
