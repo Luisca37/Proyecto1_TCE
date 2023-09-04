@@ -18,7 +18,7 @@ title("Señal Moduladora 1");
 %Señal Portadora 1
 %A_port=A_mod/M;
 A_port1=1;
-F_port1=500;
+F_port1=700;
 S_port1=A_port1*cos(2*pi*F_port1*t);
 figure(1)
 subplot(2,1,2); 
@@ -118,12 +118,21 @@ mi=2;
 t2 = (0:1/Fs:0.01);
  
 s_fm = fmmod(m,fc_fm,Fs_fm,fDev);
-figure(8)
-plot(t, s_fm)
+% figure(8)
+% plot(t, s_fm)
 %xlabel('Time (s)')
 %ylabel('Amplitude')
-legend('Modulated Signal')
-
+% legend('Modulated Signal')
+Y=fft(s_fm);
+P2 = abs(Y/N);
+P1 = P2(1:N/2+1);
+P1(2:end-1) = 2*P1(2:end-1);
+f = Fs_fm*(0:(N/2))/N;
+figure(8)
+plot(f,P1) 
+title("Single-Sided Amplitude Spectrum of signal FM modulada")
+xlabel("f (Hz)")
+ylabel("|P1(f)|")
 
 fm_demod = fmdemod(s_fm,fc_fm,Fs_fm,fDev);
  
@@ -148,4 +157,98 @@ xlabel('Time (s)')
 ylabel('Amplitude')
 legend('Moduladora','Demodulacion FM')
 
+%Filtros AM-------------------------------------------------------
+
+%Filtrado de señal media
+Wpass=[240 1200];
+FiltradoBP=bandpass(fm_demod,Wpass,Fs);
+Y=fft(FiltradoBP);
+P2 = abs(Y/N);
+P1 = P2(1:N/2+1);
+P1(2:end-1) = 2*P1(2:end-1);
+f = Fs*(0:(N/2))/N;
+figure(12)
+subplot(2,1,1);
+plot(f,P1) 
+title("Filtrado despues de paso banda")
+xlabel("f (Hz)")
+ylabel("|P1(f)|")
+figure(12)
+subplot(2,1,2);
+plot(t,FiltradoBP);
+title("Señal media filtrada en el tiempo")
+
+%Filtrado de señal baja
+FiltradoLP=lowpass(fm_demod,60,Fs);
+Y=fft(FiltradoLP);
+P2 = abs(Y/N);
+P1 = P2(1:N/2+1);
+P1(2:end-1) = 2*P1(2:end-1);
+f = Fs*(0:(N/2))/N;
+figure(13)
+subplot(2,1,1);
+plot(f,P1) 
+title("Filtrado despues de paso bajo")
+xlabel("f (Hz)")
+ylabel("|P1(f)|")
+figure(13)
+subplot(2,1,2);
+plot(t,FiltradoLP);
+title("Señal baja filtrada en el tiempo")
+
+%Filtrado de señal alta
+FiltradoHP=bandpass(fm_demod,[1750 2200],Fs);
+Y=fft(FiltradoHP);
+P2 = abs(Y/N);
+P1 = P2(1:N/2+1);
+P1(2:end-1) = 2*P1(2:end-1);
+f = Fs*(0:(N/2))/N;
+figure(14)
+subplot(2,1,1);
+plot(f,P1) 
+title("Filtrado despues de paso alto")
+xlabel("f (Hz)")
+ylabel("|P1(f)|")
+figure(14)
+subplot(2,1,2);
+plot(t,FiltradoHP);
+title("Señal alta filtrada en el tiempo")
+
+%Demodulación AM --------------------------------------------------
+
+%Demodulado señal media
+% demod_BP=amdemod(FiltradoBP,700,Fs);
+% figure(15)
+% subplot(2,1,1);
+% plot(t,demod_BP)
+% title("SEÑAL BP DEMODULADA DESPUES DE FILTRO")
+% Y=fft(demod_BP);
+% P2 = abs(Y/N);
+% P1 = P2(1:N/2+1);
+% P1(2:end-1) = 2*P1(2:end-1);
+% f = Fs*(0:(N/2))/N;
+% figure(15)
+% subplot(2,1,2);
+% plot(f,P1) 
+% title("ESPECTRO DEMODULADA BP")
+% xlabel("f (Hz)")
+% ylabel("|P1(f)|")
+% 
+%Demodulado señal alta
+demod_HP=amdemod(FiltradoHP,2000,Fs);
+figure(16)
+subplot(2,1,1);
+plot(t,demod_HP)
+title("SEÑAL HP DEMODULADA DESPUES DE FILTRO")
+Y=fft(demod_HP);
+P2 = abs(Y/N);
+P1 = P2(1:N/2+1);
+P1(2:end-1) = 2*P1(2:end-1);
+f = Fs*(0:(N/2))/N;
+figure(16)
+subplot(2,1,2);
+plot(f,P1) 
+title("ESPECTRO DEMODULADA HP")
+xlabel("f (Hz)")
+ylabel("|P1(f)|")
 
