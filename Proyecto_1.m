@@ -28,19 +28,19 @@ xlabel('Tiempo (s)');
 ylabel('Amplitud');
 
 subplot(3,1,2);
-plot(t, carrier_signal);
+plot(t, carrier_signal1);
 title('Portadora Sin Modular');
 xlabel('Tiempo (s)');
 ylabel('Amplitud');
 
 subplot(3,1,3);
-plot(t, modulated_signal);
+plot(t, modulated_signal1);
 title('Señal Modulada AM');
 xlabel('Tiempo (s)');
 ylabel('Amplitud');
 
 %Espectro
-Y=fft(modulated_signal);
+Y=fft(modulated_signal1);
 P2 = abs(Y/N);
 P1 = P2(1:N/2+1);
 P1(2:end-1) = 2*P1(2:end-1);
